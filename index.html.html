@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ණය ගණකය</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 16px 60px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .hero-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #dbeafe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .hero-icon svg { width: 30px; height: 30px; }
+    .hero h1 { font-size: 22px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px; }
+    .hero p { font-size: 14px; color: #64748b; }
+
+    /* Card */
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 22px; }
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .field-label span {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e40af;
+    }
+
+    .big-input {
+      width: 100%;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1e293b;
+      border: none;
+      border-bottom: 2.5px solid #e2e8f0;
+      background: transparent;
+      padding: 6px 0;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .big-input:focus { border-bottom-color: #3b82f6; }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #3b82f6;
+      cursor: pointer;
+      margin: 4px 0;
+    }
+
+    /* Pill buttons */
+    .pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .pill {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid #e2e8f0;
+      color: #64748b;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .pill:hover { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+    .pill.active { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
+
+    .divider {
+      border: none;
+      border-top: 1.5px dashed #e2e8f0;
+      margin: 4px 0 20px;
+    }
+
+    /* Summary rows */
+    .summary { display: flex; flex-direction: column; gap: 2px; }
+    .s-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .s-row:last-child { border-bottom: none; }
+    .s-label { font-size: 14px; color: #64748b; }
+    .s-val { font-size: 15px; font-weight: 600; color: #1e293b; }
+
+    /* Total box */
+    .total-box {
+      margin-top: 16px;
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      border-radius: 16px;
+      padding: 20px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-label { font-size: 13px; color: #bfdbfe; }
+    .total-val { font-size: 26px; font-weight: 700; color: white; }
+
+    /* Bar */
+    .bar-section { margin-top: 18px; }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 7px;
+    }
+    .bar-track {
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: #3b82f6;
+      border-radius: 8px 0 0 8px;
+      transition: width 0.4s ease;
+    }
+    .bar-foot {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+
+    /* Tip box */
+    .tip {
+      display: none;
+      margin-top: 14px;
+      background: #fefce8;
+      border: 1.5px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #78350f;
+      line-height: 1.5;
+    }
+    .tip.show { display: block; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="3"/>
+        <path d="M16 7V5a2 2 0 0 0-4 0v2"/>
+        <line x1="12" y1="12" x2="12" y2="16"/>
+        <line x1="10" y1="14" x2="14" y2="14"/>
+      </svg>
+    </div>
+    <h1>ණය ගණකය</h1>
+    <p>ඔයාගේ ණය details දාලා බලන්නකෝ 👇</p>
+  </div>
+
+  <div class="card">
+
+    <!-- Amount -->
+    <div class="field">
+      <div class="field-label">
+        ණය ගන්නේ කීයද?
+        <span id="amtShow">රු. 10,000</span>
+      </div>
+      <input class="big-input" type="number" id="amt" value="10000"
+        oninput="syncAmt(); calc();" placeholder="0">
+      <div class="pills">
+        <button class="pill" onclick="setAmt(5000)">5,000</button>
+        <button class="pill" onclick="setAmt(10000)">10,000</button>
+        <button class="pill" onclick="setAmt(25000)">25,000</button>
+        <button class="pill" onclick="setAmt(50000)">50,000</button>
+        <button class="pill" onclick="setAmt(100000)">1 Lakh</button>
+      </div>
+    </div>
+
+    <!-- Interest Rate -->
+    <div class="field">
+      <div class="field-label">
+        මාසික පොලී අනුපාතය
+        <span id="ptrShow">5%</span>
+      </div>
+      <input type="range" id="ptr" min="0" max="30" step="0.5" value="5"
+        oninput="document.getElementById('ptrShow').textContent = this.value + '%'; calc();">
+      <div class="pills">
+        <button class="pill" onclick="setPtr(2)">2%</button>
+        <button class="pill" onclick="setPtr(5)">5%</button>
+        <button class="pill" onclick="setPtr(10)">10%</button>
+        <button class="pill" onclick="setPtr(15)">15%</button>
+      </div>
+    </div>
+
+    <!-- Duration -->
+    <div class="field" style="margin-bottom:8px;">
+      <div class="field-label">
+        කීය කාලයකින් ගෙවනවද?
+        <span id="timeShow">5 මාස</span>
+      </div>
+      <input type="range" id="time" min="1" max="60" step="1" value="5"
+        oninput="document.getElementById('timeShow').textContent = this.value + ' මාස'; calc();">
+      <div class="pills">
+        <button class="pill" onclick="setTime(3)">3 මාස</button>
+        <button class="pill" onclick="setTime(6)">6 මාස</button>
+        <button class="pill" onclick="setTime(12)">1 අවුරුදු</button>
+        <button class="pill" onclick="setTime(24)">2 අවුරුදු</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="s-row">
+        <span class="s-label">ගෙවිය යුතු මාස ගණන</span>
+        <span class="s-val" id="outMonths">—</span>
+      </div>
+      <div class="s-row">
+        <span class="s-label">මාසෙකට ගෙවිය යුතු</span>
+        <span class="s-val" id="outInstall">—</span>
+      </div>
+      <div class="s-row">
+        <span class="s-label">මුළු පොලිය</span>
+        <span class="s-val" id="outInt">—</span>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="total-box">
+      <span class="total-label">මුළු ගෙවිය යුතු මුදල</span>
+      <span class="total-val" id="outTotal">—</span>
+    </div>
+
+    <!-- Bar -->
+    <div class="bar-section">
+      <div class="bar-head">
+        <span>ණය මුදල</span>
+        <span>පොලිය</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="bar" style="width: 70%;"></div>
+      </div>
+      <div class="bar-foot">
+        <span id="pctP">—</span>
+        <span id="pctI">—</span>
+      </div>
+    </div>
+
+    <!-- Tip -->
+    <div class="tip" id="tip"></div>
+
+  </div>
+
+  <div class="footer">සරලව ගණනය කරන්නට හදලා දීලා — Claude විසින් 💙</div>
+
+</div>
+
+<script>
+  function fmt(n) {
+    return "රු. " + Math.round(n).toLocaleString('si-LK');
+  }
+
+  function syncAmt() {
+    var v = parseFloat(document.getElementById('amt').value) || 0;
+    document.getElementById('amtShow').textContent = fmt(v);
+  }
+
+  function setAmt(v) {
+    document.getElementById('amt').value = v;
+    syncAmt();
+    calc();
+  }
+
+  function setPtr(v) {
+    document.getElementById('ptr').value = v;
+    document.getElementById('ptrShow').textContent = v + '%';
+    calc();
+  }
+
+  function setTime(v) {
+    document.getElementById('time').value = v;
+    document.getElementById('timeShow').textContent = v + ' මාස';
+    calc();
+  }
+
+  function calc() {
+    var a = parseFloat(document.getElementById('amt').value) || 0;
+    var p = parseFloat(document.getElementById('ptr').value) || 0;
+    var t = parseInt(document.getElementById('time').value) || 0;
+
+    if (a > 0 && t > 0) {
+      var totalInt = (a * (p / 100)) * t;
+      var totalPay = a + totalInt;
+      var monthly = totalPay / t;
+      var pct = totalPay > 0 ? Math.round((a / totalPay) * 100) : 100;
+
+      document.getElementById('outMonths').textContent = t + ' කි';
+      document.getElementById('outInstall').textContent = fmt(monthly);
+      document.getElementById('outInt').textContent = fmt(totalInt);
+      document.getElementById('outTotal').textContent = fmt(totalPay);
+      document.getElementById('bar').style.width = pct + '%';
+      document.getElementById('pctP').textContent = pct + '%';
+      document.getElementById('pctI').textContent = (100 - pct) + '%';
+
+      var tip = document.getElementById('tip');
+      if (p >= 15) {
+        tip.textContent = '⚠️ පොලිය ගොඩක් වැඩියි! ඊට වඩා අඩු rate එකක් හොයාගන්න try කරන්නකෝ.';
+        tip.className = 'tip show';
+      } else if (monthly > a * 0.5) {
+        tip.textContent = '💡 මාසික ගෙවීම ලොකු ගාණක්. ගෙවන කාලය ටිකක් දිගු කරන්නකෝ.';
+        tip.className = 'tip show';
+      } else {
+        tip.className = 'tip';
+      }
+    }
+  }
+
+  syncAmt();
+  calc();
+</script>
+
+</body>
+</html>
